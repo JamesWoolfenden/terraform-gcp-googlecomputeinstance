@@ -123,3 +123,21 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 ```
 Fill your boots.
+
+## Connect?
+Try:
+```
+gcloud compute --project "focused-elysium-224508" ssh --zone "us-central1-c" "terraform-instance"
+```
+This will add a folder and key into your profile if your dont have one.
+```
+WARNING: The public SSH key file for gcloud does not exist.
+WARNING: The private SSH key file for gcloud does not exist.
+WARNING: You do not have an SSH key for gcloud.
+WARNING: SSH keygen will be executed to generate a key.
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/jim/.ssh/google_compute_engine.
+Your public key has been saved in /home/jim/.ssh/google_compute_engine.pub.
+```
