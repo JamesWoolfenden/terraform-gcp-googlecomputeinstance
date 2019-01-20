@@ -9,8 +9,3 @@ variable "username" {
 variable "common_tags" {
   type = "map"
 }
-
-variable "depends_on" {
-  type    = "list"
-  default = []
-}

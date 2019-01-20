@@ -8,4 +8,10 @@
 # .tfvars files
 *.tfvars
 id_rsa*
+*.iml
+.build-harness
+build-harness
+*.ini
+*~HEAD
 *.pub
+*.orig
