@@ -1,5 +1,5 @@
 module "compute" {
-  source      = "github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance"
+  source      = "../../"
   common_tags = "${var.common_tags}"
   region      = "${var.region}"
   zone        = "${var.zone}"

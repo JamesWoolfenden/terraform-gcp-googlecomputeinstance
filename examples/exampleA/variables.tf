@@ -7,5 +7,5 @@ variable "username" {
 }
 
 variable "common_tags" {
-  type = "map"
+  type = "list"
 }
