@@ -9,7 +9,6 @@
 
 Terraform module to provision a secure terraform state bucket for team use of IAC.
 
-
 ---
 
 This project uses the "build-harness" a modified version of the project ["SweetOps"](https://cpco.io/sweetops) from Cloudposse. Sweet indeed.
@@ -47,9 +46,9 @@ common_tags = "${var.common_tags}"
 ```
 Available targets:
 
+  help:                              Help screen
   help/all:                          Display help for all targets
   help/short:                        This help short screen
-  help:                              Help screen
   lint:                              Lint terraform code
 
 ```
@@ -225,12 +224,6 @@ Check out these related projects.
 
 File a GitHub [issue](https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance/issues).
 
-
-
-## Terraform Module Development
-
-
-
 ## Slack Community
 
 You can join the Cloudposse community [Open Source Community][slack] on Slack.
@@ -296,7 +289,7 @@ See [LICENSE](LICENSE) for full details.
 
 
 
-[logo]: docs/slalom-logo.png
+[logo]: /docs/slalom-logo.png
 [website]: https://slalom.com
 [github]: https://github.com/jameswoolfenden
 [slack]: https://cpco.io/slack
