@@ -56,36 +56,43 @@ Available targets:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| common_tags | - | list | - | yes |
+| common_tags | Implements the common tags scheme | list | - | yes |
 | depends_on | - | list | `<list>` | no |
-| project_id | - | string | - | yes |
-| region | - | string | - | yes |
+| project_id | GCP project ID | string | - | yes |
+| region | GCP region | string | - | yes |
 | username | - | string | - | yes |
-| zone | - | string | - | yes |
+| zone | GCP zone | string | - | yes |
 
-# Getting started with Terraform and Google Cloud
-```
+## Getting started with Terraform and Google Cloud
+
+```cli
 Terraform init
 Terraform plan
 ```
+
 This should fail as you dont have anything Google cloud set.
-```
+
+```cli
 * provider.google: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
 ```
+
 This needs for your to set environmental variable
 GOOGLE_APPLICATION_CREDENTIALS
 This points to a json file.
 
 ## Step 1 install the google sdk cli
+
 Windows:
-```
+
+```cli
 choco install gcloudsdk
 ```
+
 Or
 
 Ubuntu:
 
-```
+```bash
 # Create environment variable for correct distribution
 export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
 
@@ -100,37 +107,46 @@ sudo apt-get update && sudo apt-get install google-cloud-sdk
 ```
 
 ## Step 2 Authentication
+
 Once you have the cli installed run:
-```
+
+```cli
 gcloud init
 ```
+
 and that will set up your cli environment.
 
 Create a service account:
+
+```cli
 gcloud iam service-accounts create [NAME]
-```
 gcloud iam service-accounts create terraform
 ```
 
 Associate it with your project:
+
+```cli
 gcloud projects add-iam-policy-binding [PROJECT_ID] --member "serviceAccount:[NAME]@[PROJECT_ID].iam.gserviceaccount.com" --role "roles/owner"
-```
 gcloud projects add-iam-policy-binding focused-elysium-224508 --member "serviceAccount:terraform@focused-elysium-224508.iam.gserviceaccount.com" --role "roles/owner"
 ```
+
 Now we can obtain our credentials file:
 gcloud iam service-accounts keys create [FILE_NAME].json --iam-account [NAME]@[PROJECT_ID].iam.gserviceaccount.com
 
-```
+```cli
 gcloud iam service-accounts keys create terraform.json --iam-account terraform@focused-elysium-224508.iam.gserviceaccount.com
 ```
 
 I copied the json file to ~/.gcp and then run (or add to your .bashrc):
 Ubuntu
-```
+
+```cli
 export GOOGLE_APPLICATION_CREDENTIALS="/home/[username]/.gcp/terraform.json"
 ```
+
 or Windows
-```
+
+```cli
 $env:GOOGLE_APPLICATION_CREDENTIALS="c:\Users\[username]]\.gcp\terraform.json"
 ```
 
@@ -140,7 +156,7 @@ https://cloud.google.com/storage/docs/reference/libraries
 ## Cooking with GAS
 Once that var is in your shell you can terraform plan:
 
-```
+```cli
 An execution plan has been generated and is shown below.
 Resource actions are indicated with the following symbols:
   + create
@@ -187,15 +203,20 @@ Terraform will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
 
 ```
+
 Fill your boots.
 
-## Connect?
+## Connect
+
 Try:
-```
+
+```cli
 gcloud compute --project "focused-elysium-224508" ssh --zone "us-central1-c" "terraform-instance"
 ```
+
 This will add a folder and key into your profile if your dont have one.
-```
+
+```cli
 WARNING: The public SSH key file for gcloud does not exist.
 WARNING: The private SSH key file for gcloud does not exist.
 WARNING: You do not have an SSH key for gcloud.

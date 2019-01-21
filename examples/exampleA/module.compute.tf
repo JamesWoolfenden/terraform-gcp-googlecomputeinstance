@@ -1,5 +1,5 @@
 module "compute" {
-  source      = "../../"
+  source      = "jameswoolfenden/googlecomputeinstance/gcp"
   common_tags = "${var.common_tags}"
   region      = "${var.region}"
   zone        = "${var.zone}"
