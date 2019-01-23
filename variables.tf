@@ -19,7 +19,9 @@ variable "common_tags" {
   description = "Implements the common tags scheme"
 }
 
-variable "depends_on" {
-  type    = "list"
-  default = []
+# this is enables you to add dependancies
+variable depends_on {
+  default     = []
+  description = "This is a way to make a module depends on, which isnt built in."
+  type        = "list"
 }

@@ -57,14 +57,13 @@ usage: |-
 
   ```hcl
   module "compute" {
-  source      = "github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance"
+  source      = "JamesWoolfenden/-googlecomputeinstance/gcp"
   version     = "0.0.4"
   common_tags = "${var.common_tags}"
   }
   ```
 
 include:
-  - "docs/targets.md"
   - "docs/terraform.md"
   - "docs/usage.md"
 
