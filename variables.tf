@@ -1,27 +1,34 @@
 variable "region" {
+  type        = string
   description = "GCP region"
 }
 
 variable "zone" {
+  type        = string
   description = "GCP zone"
 }
 
 variable "project_id" {
+  type        = string
   description = "GCP project ID"
 }
 
 variable "username" {
-  description = ""
+  type        = string
+  description = "I think you'll figure this one out"
 }
 
 variable "common_tags" {
-  type        = "list"
+  type        = list
   description = "Implements the common tags scheme"
 }
 
-# this is enables you to add dependancies
-variable depends_on {
-  default     = []
-  description = "This is a way to make a module depends on, which isnt built in."
-  type        = "list"
+variable "machine_type" {
+  type    = string
+  default = "f1-micro"
+}
+
+variable "image" {
+  type    = string
+  default = "debian-cloud/debian-9"
 }

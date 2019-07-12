@@ -1,4 +1,4 @@
-## Inputs
+# Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
@@ -8,4 +8,3 @@
 | region | GCP region | string | - | yes |
 | username | - | string | - | yes |
 | zone | GCP zone | string | - | yes |
-
