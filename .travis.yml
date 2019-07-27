@@ -6,6 +6,7 @@ branches:
   only:
     - master
 env:
+  - VERSION="0.2.$TRAVIS_BUILD_NUMBER"
 addons:
   apt:
     packages:
@@ -20,11 +21,11 @@ before_script:
 - terraform -v
 
 script:
+- terraform init -get-plugins -backend=false -input=false
 - terraform init -get -backend=false -input=false
 - terraform fmt
 - bash validate.sh
 
-## Lint check Terraform
 
 after_success:
   - git config --global user.email "builds@travis-ci.com"

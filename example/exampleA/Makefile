@@ -1,10 +1,29 @@
-SHELL := /bin/bash
+#Makefile
+ifdef OS
+   RM = $(powershell  –noprofile rm .\terraform\modules -force -recurse)
+else
+   ifeq ($(shell uname), Linux)
+      RM = rm .terraform/modules/ -fr
+   endif
+endif
 
-# List of targets the `readme` target should call before generating the readme
-export README_DEPS ?= docs/targets.md docs/terraform.md
+.PHONY: all
 
--include $(shell curl -sSL -o .build-harness "https://raw.githubusercontent.com/JamesWoolfenden/build-harness/master/templates/Makefile.build-harness"; echo .build-harness)
+all: init plan
 
-## Lint terraform code
-lint:
-	$(SELF) terraform/install terraform/get-modules terraform/get-plugins terraform/lint terraform/validate
+init:
+	$(RM)
+	terraform init -reconfigure
+
+plan: init
+	terraform plan -refresh=true
+
+build: init
+	terraform apply -auto-approve#
+lock:
+	@$(TERRAFORM) apply -target module.statebucket.aws_dynamodb_table.dynamodb-state-lock -auto-approve
+
+first: terraform/init lock
+	@$(TERRAFORM) apply -target module.statebucket.google_storage_bucket.statebucket -auto-approve
+	@$(TERRAFORM) apply -target module.statebucket.local_file.remote_state -auto-approve
+	@$(TERRAFORM) init -force-copy

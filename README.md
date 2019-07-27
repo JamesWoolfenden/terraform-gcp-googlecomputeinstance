@@ -18,20 +18,24 @@ Include this repository as a module in your existing terraform code:
 module "compute" {
 source      = "JamesWoolfenden/-googlecomputeinstance/gcp"
 version     = "0.0.4"
-common_tags = "${var.common_tags}"
+common_tags = var.common_tags
 }
 ```
 
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| common_tags | Implements the common tags scheme | list | - | yes |
-| depends_on | - | list | `<list>` | no |
-| project_id | GCP project ID | string | - | yes |
-| region | GCP region | string | - | yes |
-| username | - | string | - | yes |
-| zone | GCP zone | string | - | yes |
+| common\_tags | Implements the common tags scheme | list | n/a | yes |
+| image |  | string | `"debian-cloud/debian-9"` | no |
+| machine\_type |  | string | `"f1-micro"` | no |
+| project\_id | GCP project ID | string | n/a | yes |
+| region | GCP region | string | n/a | yes |
+| username | I think you'll figure this one out | string | n/a | yes |
+| zone | GCP zone | string | n/a | yes |
+
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Getting started with Terraform and Google Cloud
 
@@ -219,7 +223,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-gcp-
 
 ## Copyrights
 
-Copyright � 2019-2019 [Slalom, LLC](https://slalom.com)
+Copyright © 2019-2019 [Slalom, LLC](https://slalom.com)
 
 ## License
 
@@ -261,5 +265,4 @@ under the License.
 [share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=terraform-gcp-googlecomputeinstance&url=https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance
 [share_reddit]: https://reddit.com/submit/?url=https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance
 [share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance
-[share_googleplus]: https://plus.google.com/share?url=https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance
 [share_email]: mailto:?subject=terraform-gcp-googlecomputeinstance&body=https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance
