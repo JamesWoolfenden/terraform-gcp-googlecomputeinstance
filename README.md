@@ -23,17 +23,29 @@ common_tags = var.common_tags
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Providers
+
+| Name | Version |
+|------|---------|
+| google | n/a |
+| local | n/a |
+| tls | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| common\_tags | Implements the common tags scheme | list | n/a | yes |
-| image |  | string | `"debian-cloud/debian-9"` | no |
-| machine\_type |  | string | `"f1-micro"` | no |
-| project\_id | GCP project ID | string | n/a | yes |
-| region | GCP region | string | n/a | yes |
-| username | I think you'll figure this one out | string | n/a | yes |
-| zone | GCP zone | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| common\_tags | Implements the common tags scheme | `list` | n/a | yes |
+| image | n/a | `string` | `"debian-cloud/debian-9"` | no |
+| machine\_type | n/a | `string` | `"f1-micro"` | no |
+| project\_id | GCP project ID | `string` | n/a | yes |
+| region | GCP region | `string` | n/a | yes |
+| username | I think you'll figure this one out | `string` | n/a | yes |
+| zone | GCP zone | `string` | n/a | yes |
+
+## Outputs
+
+No output.
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
