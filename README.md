@@ -1,9 +1,9 @@
 # terraform-gcp-googlecomputeinstance
 
-[![Build Status](https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstanc/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://travis-ci.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance)
+[![Build Status](https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance)
 [![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-gcp-googlecomputeinstance.svg)](https://github.com/JamesWoolfenden/terraform-gcp-googlecomputeinstance/releases/latest)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![pre-commit](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
+[![checkov](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
 
 Terraform module to provision a secure terraform state bucket for team use of IAC.
 
