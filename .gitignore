@@ -8,8 +8,6 @@
 # .tfvars files
 id_rsa*
 *.iml
-.build-harness
-build-harness
 *.ini
 *~HEAD
 *.pub
