@@ -3,11 +3,6 @@ variable "region" {
   description = "GCP region"
 }
 
-variable "zone" {
-  type        = string
-  description = "GCP zone"
-}
-
 variable "project_id" {
   type        = string
   description = "GCP project ID"
@@ -19,7 +14,7 @@ variable "username" {
 }
 
 variable "common_tags" {
-  type        = list
+  type        = list(any)
   description = "Implements the common tags scheme"
 }
 
@@ -31,4 +26,10 @@ variable "machine_type" {
 variable "image" {
   type    = string
   default = "debian-cloud/debian-9"
+}
+
+variable "zone" {
+  default     = "us-central1-a"
+  type        = string
+  description = "GCP zone"
 }

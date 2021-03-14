@@ -16,5 +16,5 @@ variable "username" {
 }
 
 variable "common_tags" {
-  type = list
+  type = list(any)
 }

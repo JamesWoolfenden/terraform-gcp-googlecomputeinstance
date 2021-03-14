@@ -36,22 +36,34 @@ No requirements.
 | local | n/a |
 | tls | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [google_compute_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) |
+| [google_compute_project_metadata_item](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata_item) |
+| [local_file](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) |
+| [tls_private_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| common\_tags | Implements the common tags scheme | `list` | n/a | yes |
+| common\_tags | Implements the common tags scheme | `list(any)` | n/a | yes |
 | image | n/a | `string` | `"debian-cloud/debian-9"` | no |
 | machine\_type | n/a | `string` | `"f1-micro"` | no |
 | project\_id | GCP project ID | `string` | n/a | yes |
 | region | GCP region | `string` | n/a | yes |
 | username | I think you'll figure this one out | `string` | n/a | yes |
-| zone | GCP zone | `string` | n/a | yes |
+| zone | GCP zone | `string` | `"us-central1-a"` | no |
 
 ## Outputs
 
 No output.
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Getting started with Terraform and Google Cloud
@@ -118,14 +130,14 @@ Associate it with your project:
 
 ```cli
 gcloud projects add-iam-policy-binding [PROJECT_ID] --member "serviceAccount:[NAME]@[PROJECT_ID].iam.gserviceaccount.com" --role "roles/owner"
-gcloud projects add-iam-policy-binding focused-elysium-224508 --member "serviceAccount:terraform@focused-elysium-224508.iam.gserviceaccount.com" --role "roles/owner"
+gcloud projects add-iam-policy-binding examplea --member "serviceAccount:terraform@examplea.iam.gserviceaccount.com" --role "roles/owner"
 ```
 
 Now we can obtain our credentials file:
 gcloud iam service-accounts keys create [FILE_NAME].json --iam-account [NAME]@[PROJECT_ID].iam.gserviceaccount.com
 
 ```cli
-gcloud iam service-accounts keys create terraform.json --iam-account terraform@focused-elysium-224508.iam.gserviceaccount.com
+gcloud iam service-accounts keys create terraform.json --iam-account terraform@examplea.iam.gserviceaccount.com
 ```
 
 I copied the json file to ~/.gcp and then run (or add to your .bashrc):
@@ -203,7 +215,7 @@ Fill your boots.
 Try:
 
 ```cli
-gcloud compute --project "focused-elysium-224508" ssh --zone "us-central1-c" "terraform-instance"
+gcloud compute --project "examplea" ssh --zone "us-central1-c" "terraform-instance"
 ```
 
 This will add a folder and key into your profile if your dont have one.
