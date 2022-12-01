@@ -70,6 +70,32 @@ No outputs.
 ## Role and Permissions
 
 <!-- BEGINNING OF PRE-COMMIT-PIKE DOCS HOOK -->
+The Terraform resource required is:
+
+```golang
+resource "google_project_iam_custom_role" "terraformXVlBzgba" {
+  project     = "examplea"
+  role_id     = "terraform_pike"
+  title       = "terraformXVlBzgba"
+  description = "A user with least privileges"
+  permissions = [
+    "compute.disks.create",
+    "compute.globalOperations.get",
+    "compute.instances.create",
+    "compute.instances.delete",
+    "compute.instances.get",
+    "compute.instances.setMetadata",
+    "compute.instances.setTags",
+    "compute.projects.get",
+    "compute.projects.setCommonInstanceMetadata",
+    "compute.subnetworks.use",
+    "compute.subnetworks.useExternalIp",
+    "compute.zones.get",
+    "iam.serviceAccounts.actAs"
+  ]
+}
+
+```
 <!-- END OF PRE-COMMIT-PIKE DOCS HOOK -->
 
 ## Getting started with Terraform and Google Cloud
