@@ -286,7 +286,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-gcp-
 
 ## Copyrights
 
-Copyright © 2019-2023 James Woolfenden
+Copyright © 2019-2026 James Woolfenden
 
 ## License
 
