@@ -31,7 +31,7 @@ No requirements.
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | n/a |
 | <a name="provider_local"></a> [local](#provider\_local) | n/a |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
@@ -43,7 +43,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_compute_instance.vm_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | resource |
 | [google_compute_project_metadata_item.username](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata_item) | resource |
 | [local_file.private](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
@@ -53,7 +53,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Implements the common tags scheme | `list(any)` | n/a | yes |
 | <a name="input_image"></a> [image](#input\_image) | n/a | `string` | `"debian-cloud/debian-9"` | no |
 | <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | n/a | `string` | `"f1-micro"` | no |
@@ -75,24 +75,26 @@ The Terraform resource required is:
 ```golang
 
 resource "google_project_iam_custom_role" "terraform_pike" {
-  project     = "pike"
+  project     = "pike-477416"
   role_id     = "terraform_pike"
   title       = "terraform_pike"
   description = "A user with least privileges"
   permissions = [
     "compute.disks.create",
+    "compute.disks.setLabels",
     "compute.globalOperations.get",
     "compute.instances.create",
     "compute.instances.delete",
     "compute.instances.get",
+    "compute.instances.setLabels",
     "compute.instances.setMetadata",
     "compute.instances.setTags",
+    "compute.instances.updateNetworkInterface",
     "compute.projects.get",
     "compute.projects.setCommonInstanceMetadata",
     "compute.subnetworks.use",
     "compute.subnetworks.useExternalIp",
-    "compute.zones.get",
-    "iam.serviceAccounts.actAs"
+    "compute.zones.get"
   ]
 }
 
