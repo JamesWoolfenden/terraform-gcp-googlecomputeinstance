@@ -54,11 +54,13 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Implements the common tags scheme | `list(any)` | n/a | yes |
-| <a name="input_image"></a> [image](#input\_image) | n/a | `string` | `"debian-cloud/debian-9"` | no |
-| <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | n/a | `string` | `"f1-micro"` | no |
+| <a name="input_image"></a> [image](#input\_image) | image type | `string` | `"debian-cloud/debian-9"` | no |
+| <a name="input_kms_key_self_link"></a> [kms\_key\_self\_link](#input\_kms\_key\_self\_link) | Self link of the KMS key used to encrypt the boot disk. | `string` | n/a | yes |
+| <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | machine type | `string` | `"f1-micro"` | no |
+| <a name="input_network"></a> [network](#input\_network) | The self\_link or name of the VPC network to attach to the instance. | `string` | n/a | yes |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID | `string` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | GCP region | `string` | n/a | yes |
+| <a name="input_scopes"></a> [scopes](#input\_scopes) | Scopes for instance | `list(string)` | `[]` | no |
+| <a name="input_service_account_email"></a> [service\_account\_email](#input\_service\_account\_email) | Email of the service account to attach to the instance, instead of the default Compute Engine service account. | `string` | n/a | yes |
 | <a name="input_username"></a> [username](#input\_username) | I think you'll figure this one out | `string` | n/a | yes |
 | <a name="input_zone"></a> [zone](#input\_zone) | GCP zone | `string` | `"us-central1-a"` | no |
 
@@ -88,7 +90,6 @@ resource "google_project_iam_custom_role" "terraform_pike" {
     "compute.instances.get",
     "compute.instances.setLabels",
     "compute.instances.setMetadata",
-    "compute.instances.setTags",
     "compute.instances.updateNetworkInterface",
     "compute.projects.get",
     "compute.projects.setCommonInstanceMetadata",

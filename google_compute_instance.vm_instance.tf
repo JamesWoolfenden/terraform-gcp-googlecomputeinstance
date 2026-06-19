@@ -1,8 +1,7 @@
+# holden:ignore:HLD_GCP_019 — labels are supplied via the caller's provider-level
+# default_labels (merged into terraform_labels/effective_labels by the google
+# provider); this module intentionally doesn't duplicate them as a resource attribute.
 resource "google_compute_instance" "vm_instance" {
-  # checkov:skip=CKV_GCP_38: "todo add csek"
-  # checkov:skip=CKV_GCP_32: "Ensure 'Block Project-wide SSH keys' is enabled for VM instances"
-  # checkov:skip=CKV_GCP_39: "Ensure Compute instances are launched with Shielded VM enabled"
-  # checkov:skip=CKV_GCP_30: "Ensure that instances are not configured to use the default service account"
   name         = "terraform-instance"
   project      = var.project_id
   machine_type = var.machine_type
@@ -12,12 +11,26 @@ resource "google_compute_instance" "vm_instance" {
     initialize_params {
       image = var.image
     }
+    kms_key_self_link = var.kms_key_self_link
   }
 
   network_interface {
-    # A default network is created for all GCP projects
-    network = "default"
+    network = var.network
   }
 
-  tags = var.common_tags
+  service_account {
+    email  = var.service_account_email
+    scopes = var.scopes
+  }
+
+  metadata = {
+    enable-oslogin         = "TRUE"
+    block-project-ssh-keys = "true"
+  }
+
+  shielded_instance_config {
+    enable_secure_boot          = true
+    enable_vtpm                 = true
+    enable_integrity_monitoring = true
+  }
 }
