@@ -18,16 +18,6 @@ variable "project_id" {
   }
 }
 
-variable "username" {
-  type        = string
-  description = "The user name for the instance or resources."
-
-  validation {
-    condition     = length(trimspace(var.username)) > 0
-    error_message = "The username must be a non-empty string."
-  }
-}
-
 variable "service_account_email" {
   type        = string
   description = "Email of the service account to attach to the instance."

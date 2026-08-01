@@ -1,0 +1,45 @@
+suppressions:
+  - policy_id: HLD_CI_017
+    resource_id: gha_job.pull_request.yml.pr
+    reason: >
+      Reusable workflow lives in JamesWoolfenden/.github, owned and controlled
+      by the same author as this repo -- @main carries no third-party
+      supply-chain risk, only the maintenance cost of re-pinning on every
+      update.
+    approved_by: james.woolfenden@gmail.com
+
+  - policy_id: HLD_CI_017
+    resource_id: gha_job.verify.yml.verify
+    reason: >
+      Reusable workflow lives in JamesWoolfenden/.github, owned and controlled
+      by the same author as this repo -- @main carries no third-party
+      supply-chain risk, only the maintenance cost of re-pinning on every
+      update.
+    approved_by: james.woolfenden@gmail.com
+
+  - policy_id: HLD_GCP_170
+    resource_id: google_compute_instance.vm_instance
+    reason: >
+      Module defaults to machine_type = f1-micro (shared-core), which GCP
+      Confidential VM does not support (requires N2D/C2D/N2/C3/C3D). Added
+      var.enable_confidential_compute (default false) so callers who choose
+      a compatible machine_type can opt in; the default configuration itself
+      cannot satisfy this policy without a breaking, cost-changing bump to
+      the default machine_type.
+    approved_by: james.woolfenden@gmail.com
+
+  # Same resource, module-qualified resource_id -- holden addresses this
+  # instance as "module.compute.google_compute_instance.vm_instance" when
+  # the scan root is example/examplea (reached via the module call) instead
+  # of "google_compute_instance.vm_instance" when the scan root is the
+  # module itself. Both entries are required to cover both scan roots.
+  - policy_id: HLD_GCP_170
+    resource_id: module.compute.google_compute_instance.vm_instance
+    reason: >
+      Module defaults to machine_type = f1-micro (shared-core), which GCP
+      Confidential VM does not support (requires N2D/C2D/N2/C3/C3D). Added
+      var.enable_confidential_compute (default false) so callers who choose
+      a compatible machine_type can opt in; the default configuration itself
+      cannot satisfy this policy without a breaking, cost-changing bump to
+      the default machine_type.
+    approved_by: james.woolfenden@gmail.com

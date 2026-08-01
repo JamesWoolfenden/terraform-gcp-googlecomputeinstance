@@ -1,0 +1,91 @@
+{
+  "findings": [
+    {
+      "confidence": "high",
+      "explanation": "google_compute_network.main sets auto_create_subnetworks = false (custom subnet mode, matching HLD_GCP_028), but no google_compute_subnetwork resource exists anywhere in this repo. module.compute passes network = google_compute_network.main.self_link straight into the root module, whose network_interface block (google_compute_instance.vm_instance.tf) only sets `network`, never `subnetwork`. GCP rejects this combination at apply time with 'the referenced network resource cannot be used because it is not a legacy network and the request did not specify a subnetwork field' \u2014 Terraform plan/validate can't catch it because it's a live API-side constraint, not a local type error. Every resource before the instance (network, route, firewall, KMS key) creates successfully; only the instance itself fails, mid-apply. Notably, .pike/pike.generated_policy.tf already grants compute.subnetworks.use / compute.subnetworks.useExternalIp \u2014 the least-privilege scanner expected a subnetwork to be in play, but one was never created.",
+      "file": "example/examplea/google_compute_network.main.tf",
+      "first_seen": "2026-08-01",
+      "fixable": false,
+      "id": "HOLDEN_AI_001",
+      "last_seen": "2026-08-01",
+      "line": 4,
+      "principle": "reliability",
+      "related_resources": [
+        "google_compute_instance.vm_instance",
+        "module.compute"
+      ],
+      "remediation": "Add a google_compute_subnetwork in the network's region (e.g. us-central1, matching var.zone), and thread a subnetwork reference through to the instance: either add a `subnetwork` variable/attribute to the root module's network_interface block, or have callers pass the subnetwork self_link as `network` isn't sufficient once auto_create_subnetworks is false.",
+      "resource": "google_compute_network.main",
+      "severity": "HIGH",
+      "status": "open",
+      "title": "Custom-mode VPC has zero subnetworks \u2014 the instance cannot deploy"
+    },
+    {
+      "confidence": "high",
+      "explanation": "HLD_GCP_308 already (correctly) flags this route for reproducing GCP's implicit default-internet-gateway route, framing the risk as 'silently restores unconditioned internet access for every instance on the network.' Cross-referencing with google_compute_instance.vm_instance.tf's network_interface block (no access_config, so no external IP \u2014 the reason HLD_GCP_005 passes for this instance) changes that conclusion for this specific instance: a next_hop_gateway = \"default-internet-gateway\" route only provides egress to instances that already carry an external/NAT IP. An instance with no external IP gets no connectivity from this route at all \u2014 packets are simply dropped. So the immediate, concrete risk here isn't over-exposure, it's that the network looks like it has internet egress (the route exists, terraform apply succeeds) while the instance in fact has none \u2014 which will surface as failed package installs / API calls with no obvious cause. The rule's own remediation (Cloud NAT) still fully applies and would fix both the exposure concern HLD_GCP_308 raises and the connectivity gap identified here.",
+      "file": "example/examplea/google_compute_route.main.tf",
+      "first_seen": "2026-08-01",
+      "fixable": false,
+      "id": "HOLDEN_AI_002",
+      "last_seen": "2026-08-01",
+      "line": 1,
+      "principle": "reliability",
+      "related_resources": [
+        "google_compute_instance.vm_instance"
+      ],
+      "remediation": "Replace the static route with google_compute_router + google_compute_router_nat (Cloud NAT) as HLD_GCP_308 already recommends. If only Google API access is required (e.g. for the CMEK boot disk or OS Login), enabling Private Google Access on the subnetwork from HOLDEN_AI_001 may be sufficient instead of full Cloud NAT.",
+      "resource": "google_compute_route.main",
+      "severity": "MEDIUM",
+      "status": "open",
+      "supersedes": "HLD_GCP_308",
+      "title": "The 'replacement' default route can't actually reach the internet for this instance"
+    },
+    {
+      "confidence": "high",
+      "explanation": "variable \"machine_type\" defaults to \"f1-micro\" (variables.tf:14), and the module's only current caller (example/examplea/module.compute.tf) never overrides it \u2014 so the resolved machine_type for every deployment of this module today is f1-micro, a shared-core E2/F1-family type. GCP Confidential VM (confidential_instance_config.enable_confidential_compute, which HLD_GCP_170 asks for) is only supported on dedicated-core N2D, C2D, N2, C3, and C3D machine series \u2014 shared-core types are excluded because Confidential Computing depends on hardware memory-encryption features those hosts don't have. Applying HLD_GCP_170's remediation verbatim to this module, without also changing machine_type, would make every current deployment fail at apply with a GCP API rejection.",
+      "file": "variables.tf",
+      "first_seen": "2026-08-01",
+      "fixable": false,
+      "id": "HOLDEN_AI_003",
+      "last_seen": "2026-08-01",
+      "line": 14,
+      "principle": "data-protection",
+      "related_resources": [
+        "variable.machine_type"
+      ],
+      "remediation": "Either raise the module's default machine_type to a Confidential-VM-capable family (e.g. n2d-standard-2) if confidentiality-in-use is actually required, or explicitly suppress HLD_GCP_170 while the module targets low-cost burstable instances, revisiting if a future caller needs both CMEK-at-rest (already present) and confidential-compute-in-use.",
+      "resource": "google_compute_instance.vm_instance",
+      "severity": "MEDIUM",
+      "status": "open",
+      "supersedes": "HLD_GCP_170",
+      "title": "HLD_GCP_170's own remediation would break this instance's resolved machine_type"
+    },
+    {
+      "confidence": "high",
+      "explanation": "This role was generated by the pike least-privilege scanner against an earlier version of this module that included google_compute_project_metadata_item.username, which required compute.projects.setCommonInstanceMetadata to write project-wide instance metadata. That resource has since been removed (no google_compute_project_metadata/google_compute_project_metadata_item resource remains anywhere in this repo), but the granted permission was never regenerated out. setCommonInstanceMetadata is project-scoped, not instance-scoped \u2014 holding it lets its bearer rewrite metadata (including SSH keys) for every VM in the project, a materially larger blast radius than anything the current Terraform performs (instance-level create/get/delete/setLabels/setMetadata/setTags). A rules engine has no way to detect this: it would need to diff the role's grants against a resource graph from a previous commit, not just check the current one in isolation.",
+      "file": ".pike/pike.generated_policy.tf",
+      "first_seen": "2026-08-01",
+      "fix": "Remove the line `\"compute.projects.setCommonInstanceMetadata\",` from the permissions list in google_project_iam_custom_role.terraform_pike.",
+      "fixable": true,
+      "id": "HOLDEN_AI_004",
+      "last_seen": "2026-08-01",
+      "line": 19,
+      "principle": "identity-and-access",
+      "related_resources": [],
+      "remediation": "Regenerate with `pike` against the current Terraform (the repo already uses this workflow for this exact file), or remove the `\"compute.projects.setCommonInstanceMetadata\",` line by hand.",
+      "resource": "google_project_iam_custom_role.terraform_pike",
+      "severity": "MEDIUM",
+      "status": "open",
+      "title": "terraform_pike custom role still grants project-wide metadata-write, a permission the current Terraform no longer uses"
+    }
+  ],
+  "scan_date": "2026-08-01T00:00:00Z",
+  "scan_path": ".",
+  "suggested_policies": [
+    {
+      "rationale": "HLD_GCP_028 mandates auto_create_subnetworks = false on every google_compute_network (custom subnet mode), but no existing policy checks that a subnetwork actually gets created afterward. A custom-mode network with zero subnetworks makes GCP reject any instance attached only by `network` (no `subnetwork`) at apply time \u2014 this repo hit that exact gap (see HOLDEN_AI_001). The pattern is concrete, resource-type + attribute-path scoped, and fires correctly on any Terraform using google_compute_network with auto_create_subnetworks = false and no companion google_compute_subnetwork \u2014 not just this repo. coverage_by_type for google_compute_network (HLD_GCP_028/093/094/303) and google_compute_subnetwork (HLD_GCP_025/026/388) confirms none of the existing policies check for subnetwork existence.",
+      "yaml": "id: HLD_PROPOSED_001\nname: GCP VPC networks with custom subnet mode must have at least one subnetwork\nprinciple: reliability\nseverity: HIGH\nrationale: |\n  HLD_GCP_028 requires auto_create_subnetworks = false on every google_compute_network,\n  forcing custom subnet mode so operators control CIDR ranges explicitly. But custom-mode\n  networks start with zero subnetworks, and the GCP API rejects any instance whose\n  network_interface references only the network (no subnetwork) once auto-create is\n  off, with an apply-time error: \"the referenced network resource cannot be used\n  because it is not a legacy network and the request did not specify a subnetwork\n  field.\" Terraform validate and plan both succeed with no warning; the failure only\n  surfaces at apply, by which point the network hardening from HLD_GCP_028 has\n  silently made the network unusable for any instance that doesn't explicitly pass a\n  subnetwork.\nremediation: |\n  Add at least one google_compute_subnetwork in the network's region, and reference it\n  (not just the network) from any instance/instance template attached to this VPC:\n\n    resource \"google_compute_subnetwork\" \"main\" {\n      name          = \"main\"\n      network       = google_compute_network.main.self_link\n      region        = \"us-central1\"\n      ip_cidr_range = \"10.0.0.0/24\"\n    }\nresources:\n  google_compute_network:\n    filter:\n      path: auto_create_subnetworks\n      equals: false\n    requires_companion:\n      type: google_compute_subnetwork\n      via: network\n"
+    }
+  ],
+  "suggested_suppressions": []
+}

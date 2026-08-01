@@ -1,0 +1,33 @@
+id: HLD_GCP_449
+name: GCP VPC networks with custom subnet mode must have at least one subnetwork
+principle: reliability
+severity: HIGH
+rationale: |
+  HLD_GCP_028 requires auto_create_subnetworks = false on every google_compute_network,
+  forcing custom subnet mode so operators control CIDR ranges explicitly. But custom-mode
+  networks start with zero subnetworks, and the GCP API rejects any instance whose
+  network_interface references only the network (no subnetwork) once auto-create is
+  off, with an apply-time error: "the referenced network resource cannot be used
+  because it is not a legacy network and the request did not specify a subnetwork
+  field." Terraform validate and plan both succeed with no warning; the failure only
+  surfaces at apply, by which point the network hardening from HLD_GCP_028 has
+  silently made the network unusable for any instance that doesn't explicitly pass a
+  subnetwork.
+remediation: |
+  Add at least one google_compute_subnetwork in the network's region, and reference it
+  (not just the network) from any instance/instance template attached to this VPC:
+
+    resource "google_compute_subnetwork" "main" {
+      name          = "main"
+      network       = google_compute_network.main.self_link
+      region        = "us-central1"
+      ip_cidr_range = "10.0.0.0/24"
+    }
+resources:
+  google_compute_network:
+    filter:
+      path: auto_create_subnetworks
+      equals: false
+    requires_companion:
+      type: google_compute_subnetwork
+      via: network

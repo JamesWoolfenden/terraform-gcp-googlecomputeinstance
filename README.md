@@ -33,8 +33,6 @@ No requirements.
 | Name | Version |
 | ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | n/a |
-| <a name="provider_local"></a> [local](#provider\_local) | n/a |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
 
 ## Modules
 
@@ -45,15 +43,13 @@ No modules.
 | Name | Type |
 | ---- | ---- |
 | [google_compute_instance.vm_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | resource |
-| [google_compute_project_metadata_item.username](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata_item) | resource |
-| [local_file.private](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [local_file.public](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [tls_private_key.ssh](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_delete_protection"></a> [delete\_protection](#input\_delete\_protection) | Whether to enable delete protection for the instance. | `bool` | `true` | no |
+| <a name="input_enable_confidential_compute"></a> [enable\_confidential\_compute](#input\_enable\_confidential\_compute) | Enable Confidential VM. Requires a machine\_type from a compatible family (N2D, C2D, N2, C3, C3D) -- incompatible with the f1-micro default. | `bool` | `false` | no |
 | <a name="input_image"></a> [image](#input\_image) | image type | `string` | `"debian-cloud/debian-9"` | no |
 | <a name="input_kms_key_self_link"></a> [kms\_key\_self\_link](#input\_kms\_key\_self\_link) | Self link of the KMS key used to encrypt the boot disk. | `string` | n/a | yes |
 | <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | machine type | `string` | `"f1-micro"` | no |
@@ -61,12 +57,14 @@ No modules.
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID | `string` | n/a | yes |
 | <a name="input_scopes"></a> [scopes](#input\_scopes) | Scopes for instance | `list(string)` | `[]` | no |
 | <a name="input_service_account_email"></a> [service\_account\_email](#input\_service\_account\_email) | Email of the service account to attach to the instance, instead of the default Compute Engine service account. | `string` | n/a | yes |
-| <a name="input_username"></a> [username](#input\_username) | I think you'll figure this one out | `string` | n/a | yes |
+| <a name="input_subnetwork"></a> [subnetwork](#input\_subnetwork) | Self link of the subnetwork to attach the instance to. Required when network is a custom subnet-mode VPC (auto\_create\_subnetworks = false) -- GCP rejects instance creation on such a network without one. | `string` | `null` | no |
 | <a name="input_zone"></a> [zone](#input\_zone) | GCP zone | `string` | `"us-central1-a"` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_instance"></a> [instance](#output\_instance) | The created Compute Engine instance. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Role and Permissions
@@ -75,7 +73,7 @@ No outputs.
 The Terraform resource required is:
 
 ```golang
-
+# apply role
 resource "google_project_iam_custom_role" "terraform_pike" {
   project     = "pike-477416"
   role_id     = "terraform_pike"
@@ -84,17 +82,26 @@ resource "google_project_iam_custom_role" "terraform_pike" {
   permissions = [
     "compute.disks.create",
     "compute.disks.setLabels",
-    "compute.globalOperations.get",
     "compute.instances.create",
     "compute.instances.delete",
     "compute.instances.get",
     "compute.instances.setLabels",
     "compute.instances.setMetadata",
     "compute.instances.updateNetworkInterface",
-    "compute.projects.get",
-    "compute.projects.setCommonInstanceMetadata",
     "compute.subnetworks.use",
     "compute.subnetworks.useExternalIp",
+    "compute.zones.get"
+  ]
+}
+
+# plan role
+resource "google_project_iam_custom_role" "terraform_pike_plan" {
+  project     = "pike-477416"
+  role_id     = "terraform_pike_plan"
+  title       = "terraform_pike_plan"
+  description = "A user with least privileges"
+  permissions = [
+    "compute.instances.get",
     "compute.zones.get"
   ]
 }

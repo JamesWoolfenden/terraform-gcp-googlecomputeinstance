@@ -15,7 +15,8 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   network_interface {
-    network = var.network
+    network    = var.network
+    subnetwork = var.subnetwork
   }
 
   service_account {
@@ -33,4 +34,10 @@ resource "google_compute_instance" "vm_instance" {
     enable_vtpm                 = true
     enable_integrity_monitoring = true
   }
+
+  confidential_instance_config {
+    enable_confidential_compute = var.enable_confidential_compute
+  }
+
+  deletion_protection = var.delete_protection
 }
