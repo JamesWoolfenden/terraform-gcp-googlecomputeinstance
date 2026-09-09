@@ -97,3 +97,9 @@ variable "enable_confidential_compute" {
   type        = bool
   default     = false
 }
+
+variable "allow_stopping_for_update" {
+  description = "Allow Terraform to stop the instance to apply changes that require it (machine_type, service_account, scheduling). Without this, resizing a running instance aborts the apply."
+  type        = bool
+  default     = true
+}

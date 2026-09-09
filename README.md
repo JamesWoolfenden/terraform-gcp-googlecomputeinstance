@@ -48,6 +48,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_allow_stopping_for_update"></a> [allow\_stopping\_for\_update](#input\_allow\_stopping\_for\_update) | Allow Terraform to stop the instance to apply changes that require it (machine\_type, service\_account, scheduling). Without this, resizing a running instance aborts the apply. | `bool` | `true` | no |
 | <a name="input_delete_protection"></a> [delete\_protection](#input\_delete\_protection) | Whether to enable delete protection for the instance. | `bool` | `true` | no |
 | <a name="input_enable_confidential_compute"></a> [enable\_confidential\_compute](#input\_enable\_confidential\_compute) | Enable Confidential VM. Requires a machine\_type from a compatible family (N2D, C2D, N2, C3, C3D) -- incompatible with the f1-micro default. | `bool` | `false` | no |
 | <a name="input_image"></a> [image](#input\_image) | image type | `string` | `"debian-cloud/debian-9"` | no |
@@ -87,6 +88,7 @@ resource "google_project_iam_custom_role" "terraform_pike" {
     "compute.instances.get",
     "compute.instances.setLabels",
     "compute.instances.setMetadata",
+    "compute.instances.stop",
     "compute.instances.updateNetworkInterface",
     "compute.subnetworks.use",
     "compute.subnetworks.useExternalIp",

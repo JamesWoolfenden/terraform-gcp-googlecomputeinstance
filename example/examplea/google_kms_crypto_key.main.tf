@@ -6,4 +6,9 @@ resource "google_kms_crypto_key" "main" {
     prevent_destroy = true
   }
   rotation_period = "7776000s"
+
+  # 30 days, matching the default Cloud KMS applies to console-created keys.
+  # Unset would leave only 24h to recover a key version destroyed by mistake,
+  # after which every disk encrypted under it is unrecoverable.
+  destroy_scheduled_duration = "2592000s"
 }

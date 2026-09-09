@@ -39,5 +39,6 @@ resource "google_compute_instance" "vm_instance" {
     enable_confidential_compute = var.enable_confidential_compute
   }
 
-  deletion_protection = var.delete_protection
+  allow_stopping_for_update = var.allow_stopping_for_update
+  deletion_protection       = var.delete_protection
 }
