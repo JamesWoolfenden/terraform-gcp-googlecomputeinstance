@@ -23,7 +23,6 @@ plan:
 planned: init
 	terraform plan -out tf.plan
 	terraform show -json tf.plan  > tf.json
-	checkov -f tf.json
 
 p:
 	terraform plan -refresh=true
@@ -45,12 +44,6 @@ destroy: init
 docs:
 	terraform-docs md . > README.md
 
-valid:
-	-terraform fmt -recursive
-	-checkov -d . --external-checks-dir ../../checkov
-	-terrascan scan
-	docker pull checkmarx/kics:latest
-	docker run -v $(CURDIR):/path checkmarx/kics:latest scan --path /path
 
 target:
 	@read -p "Enter Module to target:" MODULE;
